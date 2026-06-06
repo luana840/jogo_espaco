@@ -1,4 +1,4 @@
-import os, time
+import os, time, pygame
 import json
 from datetime import datetime
 
@@ -58,3 +58,38 @@ def maior_pontuador():
             dataJogada = info[1]            
 
     return nome_maior, maior_pontos, dataJogada
+
+def pausar(tela, preto):
+    branco_azulado = (235,235,255)
+    fonteMenu = pygame.font.SysFont("bahnschrift", 115, bold = True)
+    fonte_escrita = pygame.font.SysFont("bahnschrift", 20)
+
+    texto = fonteMenu.render("PAUSE", True, branco_azulado)
+    aperte_espaco = fonte_escrita.render("Aperte >space< novamente para voltar ao jogo", True, branco_azulado)
+    pygame.draw.rect(tela, branco_azulado, (470, 180, 25, 120))
+    pygame.draw.rect(tela, branco_azulado, (505, 180, 25, 120))
+    
+
+    pausado = True
+
+    while pausado:
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    pausado = False  # volta para o jogo
+
+        tela.blit(texto, (300, 350))
+        tela.blit(aperte_espaco, (290, 650))
+        pygame.display.update()
+
+
+
+
+
+
+        

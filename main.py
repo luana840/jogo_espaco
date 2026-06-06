@@ -1,6 +1,6 @@
 import pygame
 import random
-from recursos.funcoes import inicializarBancoDeDados, limpar_tela, escreverDados, maior_pontuador
+from recursos.funcoes import inicializarBancoDeDados, limpar_tela, escreverDados, maior_pontuador, pausar
 
 limpar_tela()
 inicializarBancoDeDados()
@@ -14,7 +14,7 @@ while True:
     else:
         print("Nome Inválido!")
         
-tamanho = (800,200)
+tamanho = (1000,700)
 pygame.display.set_caption("Iron Man de Pensamento Computacional")
 icone  = pygame.image.load("bases/icone.png")
 pygame.display.set_icon(icone)
@@ -23,11 +23,11 @@ tela = pygame.display.set_mode( tamanho )
 branco = (255, 255, 255)
 preto = (0, 0, 0)
 
-fundo = pygame.image.load("bases/background.jpg")
-fundoDead = pygame.image.load("bases/backgroundDead.jpg")
+fundo = pygame.image.load("bases/background_space .png")
+fundoDead = pygame.image.load("bases/morreu.png")
 fundoStart = pygame.image.load("bases/backgroundStart.jpg")
 
-iron = pygame.image.load("bases/IronMan.png")
+iron = pygame.image.load("bases/spaceship.png")
 iron = pygame.transform.scale(iron, (116,51))
 missel = pygame.image.load("bases/missile.png")
 missel = pygame.transform.scale(missel, (125,25))
@@ -44,8 +44,8 @@ def jogar():
     movimentoXPersona  = 0
     movimentoYPersona  = 0
     velocidadeMovPersona = 5
-    posicaoXMissel = 800
-    posicaoYMissel = 100
+    posicaoXMissel = 870
+    posicaoYMissel = 500
     velocidadeMissel = 2
     pontos = 0
     pygame.mixer.Sound.play(missileSound)
@@ -72,18 +72,20 @@ def jogar():
                 movimentoXPersona = 0
             elif evento.type == pygame.KEYUP and evento.key == pygame.K_LEFT:
                 movimentoXPersona = 0
+            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_SPACE:
+                pausar(tela, preto)
                 
         
         posicaoXPersona = posicaoXPersona + movimentoXPersona          
         posicaoYPersona = posicaoYPersona + movimentoYPersona            
         if posicaoXPersona < 0 :
             posicaoXPersona = 0
-        elif posicaoXPersona > 685:
-            posicaoXPersona = 685
+        elif posicaoXPersona > 870:
+            posicaoXPersona = 870
         if posicaoYPersona < 0 :
             posicaoYPersona = 0
-        elif posicaoYPersona > 150:
-            posicaoYPersona = 150
+        elif posicaoYPersona > 650:
+            posicaoYPersona = 650
             
             
         posicaoXMissel = posicaoXMissel - velocidadeMissel
