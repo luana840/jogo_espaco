@@ -1,8 +1,9 @@
 import pygame
-import random
-from recursos.funcoes import inicializarBancoDeDados, limpar_tela, escreverDados, maior_pontuador, pausar
+import random, pyttsx3
+from recursos.funcoes import inicializarBancoDeDados, limpar_tela, escreverDados, maior_pontuador, pausar, aguarde
 
 limpar_tela()
+motor = pyttsx3.init()
 inicializarBancoDeDados()
 nome_maior, maior_pontos, dataJogada = maior_pontuador()
 pygame.init()
@@ -22,18 +23,19 @@ relogio = pygame.time.Clock()
 tela = pygame.display.set_mode( tamanho ) 
 branco = (255, 255, 255)
 preto = (0, 0, 0)
+segundos = 5
 
 fundo = pygame.image.load("bases/background_space .png")
 fundoDead = pygame.image.load("bases/morreu.png")
-fundoStart = pygame.image.load("bases/backgroundStart.jpg")
+fundoStart = pygame.image.load("bases/background_space_start.jpeg")
 
 iron = pygame.image.load("bases/spaceship.png")
-iron = pygame.transform.scale(iron, (116,51))
-missel = pygame.image.load("bases/missile.png")
-missel = pygame.transform.scale(missel, (125,25))
+iron = pygame.transform.scale(iron, (200,100))
+missel = pygame.image.load("bases/asteroide.png")
+missel = pygame.transform.scale(missel, (150,150))
 missileSound = pygame.mixer.Sound("bases/missile.wav")
 explosaoSound = pygame.mixer.Sound("bases/explosao.wav")
-pygame.mixer.music.load("bases/ironsound.mp3")
+pygame.mixer.music.load("bases/musica_star_wars.mp3")
 fonteMenu = pygame.font.SysFont("comicsans",18)
 
 def jogar():
@@ -64,19 +66,11 @@ def jogar():
                 movimentoYPersona = 0
             elif evento.type == pygame.KEYUP and evento.key == pygame.K_DOWN:
                 movimentoYPersona = 0
-            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_RIGHT:
-                movimentoXPersona = velocidadeMovPersona
-            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_LEFT:
-                movimentoXPersona = -velocidadeMovPersona
-            elif evento.type == pygame.KEYUP and evento.key == pygame.K_RIGHT:
-                movimentoXPersona = 0
-            elif evento.type == pygame.KEYUP and evento.key == pygame.K_LEFT:
-                movimentoXPersona = 0
             elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_SPACE:
                 pausar(tela, preto)
-                
-        
-        posicaoXPersona = posicaoXPersona + movimentoXPersona          
+            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
+                quit()
+                      
         posicaoYPersona = posicaoYPersona + movimentoYPersona            
         if posicaoXPersona < 0 :
             posicaoXPersona = 0
@@ -84,8 +78,8 @@ def jogar():
             posicaoXPersona = 870
         if posicaoYPersona < 0 :
             posicaoYPersona = 0
-        elif posicaoYPersona > 650:
-            posicaoYPersona = 650
+        elif posicaoYPersona > 600:
+            posicaoYPersona = 600
             
             
         posicaoXMissel = posicaoXMissel - velocidadeMissel
@@ -111,11 +105,13 @@ def jogar():
         tela.blit( missel, (posicaoXMissel, posicaoYMissel) )
         texto = fonteMenu.render("Pontos: "+str(pontos), True, branco)
         tela.blit(texto, (700,15))
+        texto_press_space = fonteMenu.render("- Press Space to Pause Game", True, branco)
+        tela.blit(texto_press_space, (360,630))
             
-        pixelsPersonaX = list(range(posicaoXPersona, posicaoXPersona+116))
-        pixelsPersonaY = list(range(posicaoYPersona, posicaoYPersona+51))
-        pixelsMisselX = list(range(posicaoXMissel, posicaoXMissel + 125))
-        pixelsMisselY = list(range(posicaoYMissel, posicaoYMissel + 25))
+        pixelsPersonaX = list(range(posicaoXPersona, posicaoXPersona+200))
+        pixelsPersonaY = list(range(posicaoYPersona, posicaoYPersona+100))
+        pixelsMisselX = list(range(posicaoXMissel, posicaoXMissel + 150))
+        pixelsMisselY = list(range(posicaoYMissel, posicaoYMissel + 150))
         if  len( list( set(pixelsMisselY).intersection(set(pixelsPersonaY))) ) > dificuldade:
             if len( list( set(pixelsMisselX).intersection(set(pixelsPersonaX))   ) )  > dificuldade:
                 escreverDados(nome, pontos)
@@ -173,7 +169,6 @@ def dead():
         quitTexto = fonteMenu.render("Sair do Game", True, preto)
         tela.blit(quitTexto, (25,62))
 
-
         pygame.display.update()
         relogio.tick(60)
 
@@ -192,9 +187,6 @@ def start():
                 if startButton.collidepoint(evento.pos):
                     larguraButtonStart = 140
                     alturaButtonStart  = 35
-                if quitButton.collidepoint(evento.pos):
-                    larguraButtonQuit = 140
-                    alturaButtonQuit  = 35
 
                 
             elif evento.type == pygame.MOUSEBUTTONUP:
@@ -204,11 +196,6 @@ def start():
                     larguraButtonStart = 150
                     alturaButtonStart  = 40
                     jogar()
-                if quitButton.collidepoint(evento.pos):
-                    #pygame.mixer.music.play(-1)
-                    larguraButtonQuit = 150
-                    alturaButtonQuit  = 40
-                    quit()
             
         tela.fill(branco)
         tela.blit(fundoStart, (0,0))
@@ -216,9 +203,6 @@ def start():
         startTexto = fonteMenu.render("Iniciar Game", True, preto)
         tela.blit(startTexto, (25,12))
         
-        quitButton = pygame.draw.rect(tela, branco, (10,60, larguraButtonQuit, alturaButtonQuit), border_radius=15)
-        quitTexto = fonteMenu.render("Sair do Game", True, preto)
-        tela.blit(quitTexto, (25,62))
         texto = fonteMenu.render(f"The Best - {nome_maior} - {maior_pontos} - { dataJogada} ", True, branco)
         tela.blit(texto, (480,15))
         
