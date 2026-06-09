@@ -210,4 +210,4 @@ def start():
         pygame.display.update()
         relogio.tick(60)
            
-start()
+start() # estive aqui
