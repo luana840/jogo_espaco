@@ -33,6 +33,8 @@ iron = pygame.image.load("bases/spaceship.png")
 iron = pygame.transform.scale(iron, (200,100))
 missel = pygame.image.load("bases/asteroide.png")
 missel = pygame.transform.scale(missel, (150,150))
+lua = pygame.image.load("bases/moon.png")
+lua = pygame.transform.scale(lua, (150,150))
 missileSound = pygame.mixer.Sound("bases/spaceship_sound.mp3")
 explosaoSound = pygame.mixer.Sound("bases/explosion.mp3")
 pygame.mixer.music.load("bases/musica_star_wars.mp3")
@@ -47,13 +49,18 @@ def jogar():
     fundoMov2 = 1129
     posicaoXPersona = 0
     posicaoYPersona = 60
-    movimentoXPersona  = 0
     movimentoYPersona  = 0
     velocidadeMovPersona = 5
     posicaoXMissel = 870
     posicaoYMissel = 500
     velocidadeMissel = 2
+    posicaoXlua = 400
+    posicaoYlua = 300
+    velocidadeLuaX = random.randint(-2, 2)
+    velocidadeLuaY = random.randint(-2, 2)
     pontos = 0
+    raio_sol = 40
+    crescendo = True
     pygame.mixer.Sound.play(missileSound)
     pygame.mixer.music.play(-1)
     dificuldade = 20
@@ -61,7 +68,6 @@ def jogar():
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 quit()
-                movimentoXPersona = 0
             elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_UP:
                 movimentoYPersona = -velocidadeMovPersona
             elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_DOWN:
@@ -84,7 +90,28 @@ def jogar():
             posicaoYPersona = 0
         elif posicaoYPersona > 600:
             posicaoYPersona = 600
-            
+
+        if crescendo:
+            raio_sol += 0.2
+            if raio_sol >= 50:
+                crescendo = False
+        else:
+            raio_sol -= 0.2
+            if raio_sol <= 40:
+                crescendo = True
+
+        posicaoXlua += velocidadeLuaX
+        posicaoYlua += velocidadeLuaY
+
+        if posicaoXlua <= 0 or posicaoXlua >= 850:
+          velocidadeLuaX *= -1
+
+        if posicaoYlua <= 0 or posicaoYlua >= 550:
+          velocidadeLuaY *= -1
+
+        if random.randint(1, 60) == 1:
+          velocidadeLuaX = random.choice([-2, -1, 1, 2])
+          velocidadeLuaY = random.choice([-2, -1, 1, 2])
             
         posicaoXMissel = posicaoXMissel - velocidadeMissel
         if posicaoXMissel < -125:
@@ -93,6 +120,7 @@ def jogar():
             pontos = pontos + 1
             velocidadeMissel = velocidadeMissel + 1
             posicaoYMissel = random.randint(0,600)
+            
                             
         tela.fill(branco)
         tela.blit(fundo, (fundoMov1,0) )
@@ -106,11 +134,13 @@ def jogar():
         
         
         tela.blit(iron, (posicaoXPersona,posicaoYPersona))
+        tela.blit(lua, (posicaoXlua, posicaoYlua))
         tela.blit( missel, (posicaoXMissel, posicaoYMissel) )
         texto = fonteMenu.render("Pontos: "+str(pontos), True, branco)
         tela.blit(texto, (700,15))
         texto_press_space = fonteMenu.render("- Press Space to Pause Game", True, branco)
         tela.blit(texto_press_space, (360,630))
+        pygame.draw.circle(tela, (255, 255, 0), (1000, 20), int(raio_sol))
             
         pixelsPersonaX = list(range(posicaoXPersona, posicaoXPersona+200))
         pixelsPersonaY = list(range(posicaoYPersona, posicaoYPersona+100))
@@ -174,6 +204,8 @@ def dead():
         tela.blit(quitTexto, (600,565))
         cosmic_survivor = fonteMenu_titulo_dead.render("MISSION FAILED", True, branco)
         tela.blit(cosmic_survivor, (100, 300))
+        texto_dead = fonteMenu.render(f"The Best - {nome_maior}",True, branco)
+        tela.blit(texto_dead, (480,15))
         
         pygame.display.update()
         relogio.tick(60)
