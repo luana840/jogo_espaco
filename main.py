@@ -1,6 +1,6 @@
 import pygame
 import random, pyttsx3
-from recursos.funcoes import inicializarBancoDeDados, limpar_tela, escreverDados, maior_pontuador, pausar, aguarde
+from recursos.funcoes import inicializarBancoDeDados, limpar_tela, escreverDados, maior_pontuador, pausar
 
 limpar_tela()
 motor = pyttsx3.init()
@@ -16,8 +16,8 @@ while True:
         print("Nome Inválido!")
         
 tamanho = (1000,700)
-pygame.display.set_caption("Iron Man de Pensamento Computacional")
-icone  = pygame.image.load("bases/icone.png")
+pygame.display.set_caption("Cosmic Survivor")
+icone  = pygame.image.load("bases/icone_espaco.png")
 pygame.display.set_icon(icone)
 relogio = pygame.time.Clock()
 tela = pygame.display.set_mode( tamanho ) 
@@ -33,10 +33,14 @@ iron = pygame.image.load("bases/spaceship.png")
 iron = pygame.transform.scale(iron, (200,100))
 missel = pygame.image.load("bases/asteroide.png")
 missel = pygame.transform.scale(missel, (150,150))
-missileSound = pygame.mixer.Sound("bases/missile.wav")
-explosaoSound = pygame.mixer.Sound("bases/explosao.wav")
+missileSound = pygame.mixer.Sound("bases/spaceship_sound.mp3")
+explosaoSound = pygame.mixer.Sound("bases/explosion.mp3")
 pygame.mixer.music.load("bases/musica_star_wars.mp3")
 fonteMenu = pygame.font.SysFont("comicsans",18)
+fonte_start_nome = pygame.font.SysFont("comicsans",25)
+fonteMenu_titulo = pygame.font.Font("bases/Orbitron-Font.ttf",70)
+fonteMenu_titulo_dead = pygame.font.Font("bases/Orbitron-Font.ttf",70)
+fonteMenu_titulo_dead.set_bold(True)
 
 def jogar():
     fundoMov1 = 0
@@ -88,7 +92,7 @@ def jogar():
             posicaoXMissel = 800
             pontos = pontos + 1
             velocidadeMissel = velocidadeMissel + 1
-            posicaoYMissel = random.randint(0,200)
+            posicaoYMissel = random.randint(0,600)
                             
         tela.fill(branco)
         tela.blit(fundo, (fundoMov1,0) )
@@ -161,14 +165,16 @@ def dead():
             
         tela.fill(branco)
         tela.blit(fundoDead, (0,0))
-        startButton = pygame.draw.rect(tela, branco, (10,10, larguraButtonStart, alturaButtonStart), border_radius=15)
+        startButton = pygame.draw.rect(tela, branco, (280,560, larguraButtonStart, alturaButtonStart), border_radius=15)
         startTexto = fonteMenu.render("Iniciar Game", True, preto)
-        tela.blit(startTexto, (25,12))
+        tela.blit(startTexto, (300,565))
         
-        quitButton = pygame.draw.rect(tela, branco, (10,60, larguraButtonQuit, alturaButtonQuit), border_radius=15)
+        quitButton = pygame.draw.rect(tela, branco, (580,560, larguraButtonQuit, alturaButtonQuit), border_radius=15)
         quitTexto = fonteMenu.render("Sair do Game", True, preto)
-        tela.blit(quitTexto, (25,62))
-
+        tela.blit(quitTexto, (600,565))
+        cosmic_survivor = fonteMenu_titulo_dead.render("MISSION FAILED", True, branco)
+        tela.blit(cosmic_survivor, (100, 300))
+        
         pygame.display.update()
         relogio.tick(60)
 
@@ -177,8 +183,6 @@ def dead():
 def start():
     larguraButtonStart = 150
     alturaButtonStart  = 40
-    larguraButtonQuit = 150
-    alturaButtonQuit  = 40
     while True:
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -199,12 +203,26 @@ def start():
             
         tela.fill(branco)
         tela.blit(fundoStart, (0,0))
-        startButton = pygame.draw.rect(tela, branco, (10,10, larguraButtonStart, alturaButtonStart), border_radius=15)
+        startButton = pygame.draw.rect(tela, branco, (400,570, larguraButtonStart, alturaButtonStart), border_radius=15)
         startTexto = fonteMenu.render("Iniciar Game", True, preto)
-        tela.blit(startTexto, (25,12))
+        tela.blit(startTexto, (420,575))
         
         texto = fonteMenu.render(f"The Best - {nome_maior} - {maior_pontos} - { dataJogada} ", True, branco)
         tela.blit(texto, (480,15))
+        cosmic_survivor = fonteMenu_titulo.render("COSMIC SURVIVOR", True, branco)
+        tela.blit(cosmic_survivor, (100, 200))
+        cosmic_survivor = fonteMenu.render("Use as setas UP e DOWN para controlar a nave.", True, branco)
+        tela.blit(cosmic_survivor, (260, 350))
+        cosmic_survivor = fonteMenu.render("Desvie dos asteroides para ganhar pontos.", True, branco)
+        tela.blit(cosmic_survivor, (300, 390))
+        cosmic_survivor = fonteMenu.render("Quanto mais pontos, mais rápido o jogo fica.", True, branco)
+        tela.blit(cosmic_survivor, (280, 430))
+        cosmic_survivor = fonteMenu.render("Tente sobreviver e bater o recorde!", True, branco)
+        tela.blit(cosmic_survivor, (320, 470))
+        cosmic_survivor = fonte_start_nome.render(f"Seja bem vindo(a), {nome}!", True, branco)
+        tela.blit(cosmic_survivor, (330, 300))
+        motor.say(f"Seja bem vindo, {nome}!")
+        motor.runAndWait()
         
 
         pygame.display.update()
