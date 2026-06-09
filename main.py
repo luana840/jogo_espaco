@@ -1,6 +1,7 @@
 import pygame
 import random, pyttsx3
 from recursos.funcoes import inicializarBancoDeDados, limpar_tela, escreverDados, maior_pontuador, pausar
+from recursos.trabalho import mostrar_nivel
 
 limpar_tela()
 motor = pyttsx3.init()
@@ -141,6 +142,7 @@ def jogar():
         texto_press_space = fonteMenu.render("- Press Space to Pause Game", True, branco)
         tela.blit(texto_press_space, (360,630))
         pygame.draw.circle(tela, (255, 255, 0), (1000, 20), int(raio_sol))
+        mostrar_nivel(tela, fonteMenu, velocidadeMissel)
             
         pixelsPersonaX = list(range(posicaoXPersona, posicaoXPersona+200))
         pixelsPersonaY = list(range(posicaoYPersona, posicaoYPersona+100))
