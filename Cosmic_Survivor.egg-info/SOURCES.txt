@@ -1,0 +1,5 @@
+setup.py
+Cosmic_Survivor.egg-info/PKG-INFO
+Cosmic_Survivor.egg-info/SOURCES.txt
+Cosmic_Survivor.egg-info/dependency_links.txt
+Cosmic_Survivor.egg-info/top_level.txt

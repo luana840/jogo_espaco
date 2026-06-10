@@ -3,15 +3,15 @@ import cx_Freeze
 executaveis = [ 
                cx_Freeze.Executable(
                    script="main.py", 
-                   icon="assets/icone.ico",
-                    target_name="IronManMarcao.exe"
+                   icon="bases/icone_espaco.ico",
+                    target_name="Cosmic Survivor.exe"
                    ) ]
 cx_Freeze.setup(
-    name = "Iron Man",
+    name = "Cosmic Survivor",
     options={
         "build_exe":{
             "packages":["pygame"],
-            "include_files":["assets","recursos"]
+            "include_files":["bases","recursos"]
         }
     }, executables = executaveis
 )

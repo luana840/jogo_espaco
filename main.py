@@ -1,5 +1,6 @@
 import pygame
-import random, pyttsx3
+import random
+import pyttsx3
 from recursos.funcoes import inicializarBancoDeDados, limpar_tela, escreverDados, maior_pontuador, pausar
 from recursos.trabalho import mostrar_nivel
 
@@ -30,13 +31,13 @@ fundo = pygame.image.load("bases/background_space .png")
 fundoDead = pygame.image.load("bases/morreu.png")
 fundoStart = pygame.image.load("bases/background_space_start.jpeg")
 
-iron = pygame.image.load("bases/spaceship.png")
-iron = pygame.transform.scale(iron, (200,100))
-missel = pygame.image.load("bases/asteroide.png")
-missel = pygame.transform.scale(missel, (150,150))
+nave = pygame.image.load("bases/spaceship.png")
+nave = pygame.transform.scale(nave, (200,100))
+asteroide = pygame.image.load("bases/asteroide.png")
+asteroide = pygame.transform.scale(asteroide, (150,150))
 lua = pygame.image.load("bases/moon.png")
 lua = pygame.transform.scale(lua, (150,150))
-missileSound = pygame.mixer.Sound("bases/spaceship_sound.mp3")
+naveSound = pygame.mixer.Sound("bases/spaceship_sound.mp3")
 explosaoSound = pygame.mixer.Sound("bases/explosion.mp3")
 pygame.mixer.music.load("bases/musica_star_wars.mp3")
 fonteMenu = pygame.font.SysFont("comicsans",18)
@@ -52,9 +53,9 @@ def jogar():
     posicaoYPersona = 60
     movimentoYPersona  = 0
     velocidadeMovPersona = 5
-    posicaoXMissel = 870
-    posicaoYMissel = 500
-    velocidadeMissel = 2
+    posicaoXAsteroide = 870
+    posicaoYAsteroide = 500
+    velocidadeAsteroide = 2
     posicaoXlua = 400
     posicaoYlua = 300
     velocidadeLuaX = random.randint(-2, 2)
@@ -62,7 +63,7 @@ def jogar():
     pontos = 0
     raio_sol = 40
     crescendo = True
-    pygame.mixer.Sound.play(missileSound)
+    pygame.mixer.Sound.play(naveSound)
     pygame.mixer.music.play(-1)
     dificuldade = 20
     while True:
@@ -114,13 +115,13 @@ def jogar():
           velocidadeLuaX = random.choice([-2, -1, 1, 2])
           velocidadeLuaY = random.choice([-2, -1, 1, 2])
             
-        posicaoXMissel = posicaoXMissel - velocidadeMissel
-        if posicaoXMissel < -125:
-            pygame.mixer.Sound.play(missileSound)
-            posicaoXMissel = 800
+        posicaoXAsteroide = posicaoXAsteroide - velocidadeAsteroide
+        if posicaoXAsteroide < -125:
+            pygame.mixer.Sound.play(naveSound)
+            posicaoXAsteroide = 800
             pontos = pontos + 1
-            velocidadeMissel = velocidadeMissel + 1
-            posicaoYMissel = random.randint(0,600)
+            velocidadeAsteroide = velocidadeAsteroide + 1
+            posicaoYAsteroide = random.randint(0,600)
             
                             
         tela.fill(branco)
@@ -134,22 +135,22 @@ def jogar():
             fundoMov2 = 1129
         
         
-        tela.blit(iron, (posicaoXPersona,posicaoYPersona))
+        tela.blit(nave, (posicaoXPersona,posicaoYPersona))
         tela.blit(lua, (posicaoXlua, posicaoYlua))
-        tela.blit( missel, (posicaoXMissel, posicaoYMissel) )
+        tela.blit( asteroide, (posicaoXAsteroide, posicaoYAsteroide) )
         texto = fonteMenu.render("Pontos: "+str(pontos), True, branco)
         tela.blit(texto, (700,15))
         texto_press_space = fonteMenu.render("- Press Space to Pause Game", True, branco)
         tela.blit(texto_press_space, (360,630))
         pygame.draw.circle(tela, (255, 255, 0), (1000, 20), int(raio_sol))
-        mostrar_nivel(tela, fonteMenu, velocidadeMissel)
+        mostrar_nivel(tela, fonteMenu, velocidadeAsteroide)
             
         pixelsPersonaX = list(range(posicaoXPersona, posicaoXPersona+200))
         pixelsPersonaY = list(range(posicaoYPersona, posicaoYPersona+100))
-        pixelsMisselX = list(range(posicaoXMissel, posicaoXMissel + 150))
-        pixelsMisselY = list(range(posicaoYMissel, posicaoYMissel + 150))
-        if  len( list( set(pixelsMisselY).intersection(set(pixelsPersonaY))) ) > dificuldade:
-            if len( list( set(pixelsMisselX).intersection(set(pixelsPersonaX))   ) )  > dificuldade:
+        pixelsAsteroideX = list(range(posicaoXAsteroide, posicaoXAsteroide + 150))
+        pixelsAsteroideY = list(range(posicaoYAsteroide, posicaoYAsteroide + 150))
+        if  len( list( set(pixelsAsteroideY).intersection(set(pixelsPersonaY))) ) > dificuldade:
+            if len( list( set(pixelsAsteroideX).intersection(set(pixelsPersonaX))   ) )  > dificuldade:
                 escreverDados(nome, pontos)
                 dead()
                 
@@ -207,7 +208,7 @@ def dead():
         cosmic_survivor = fonteMenu_titulo_dead.render("MISSION FAILED", True, branco)
         tela.blit(cosmic_survivor, (100, 300))
         texto_dead = fonteMenu.render(f"The Best - {nome_maior}",True, branco)
-        tela.blit(texto_dead, (480,15))
+        tela.blit(texto_dead, (700,15))
         
         pygame.display.update()
         relogio.tick(60)
